@@ -73,14 +73,22 @@ def write_reports(rows, examples, outputs, extra=""):
 def main():
     examples = split_dataset(load_dataset())[1]
     tok = lm.load_tokenizer()
-    models = {"base distilgpt2 (no LoRA)": lm.load_base(), "LoRA adapter": lm.load_adapted()}
-    rows, outputs = {}, {}
+    models = {"base distilgpt2 (no LoRA)": lm.load_base(), "LoRA adapter": lm.load_adapted(),
+              "LoRA adapter, merged": lm.load_adapted(merge=True)}
+    rows, outputs, timings = {}, {}, []
     for name, model in models.items():
         outputs[name], seconds = run(model, tok, examples)
         rows[name] = summarize(outputs[name], examples)
+        timings.append(f"| {name} | {seconds:.0f} s |")
         print(f"{name}: {seconds:.0f} s for {len(examples)} events")
+    same = sum(a == b for a, b in zip(outputs["LoRA adapter"], outputs["LoRA adapter, merged"]))
+    extra = "\n".join([
+        f"Merging folds B@A into the weights. Merged and un-merged commentary is identical for "
+        f"{same} of {len(examples)} events.", "",
+        "| model | generation time |", "|---|---|", *timings, ""])
     print(metrics_table(rows))
-    write_reports(rows, examples, outputs)
+    print(f"merged == un-merged commentary: {same}/{len(examples)}")
+    write_reports(rows, examples, outputs, extra)
     print("\nsame event, both tones:")
     event = examples[0]["event"]
     for tone in TONES:

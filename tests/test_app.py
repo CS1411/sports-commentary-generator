@@ -24,7 +24,7 @@ def test_page_renders_with_its_controls():
 
 def test_generate_button_shows_the_commentary(monkeypatch):
     monkeypatch.setattr(lm, "load_tokenizer", lambda: "tok")
-    monkeypatch.setattr(lm, "load_adapted", lambda: "adapted")
+    monkeypatch.setattr(lm, "load_adapted", lambda merge=False: "merged" if merge else "adapted")
     monkeypatch.setattr(lm, "load_base", lambda: "base")
     monkeypatch.setattr(lm, "generate_commentary",
                         lambda model, tok, event, tone, n, t: f"[{model}/{tone}] {event[:12]}")
@@ -32,6 +32,9 @@ def test_generate_button_shows_the_commentary(monkeypatch):
     at.text_area[0].set_value("34' GOAL! Test scores.").run()
     at.button[0].click().run()
     assert not at.exception
+    assert at.success[0].value == "[merged/excited] 34' GOAL! Te"  # merged is the default
+    at.checkbox[0].uncheck().run()
+    at.button[0].click().run()
     assert at.success[0].value == "[adapted/excited] 34' GOAL! Te"
 
 

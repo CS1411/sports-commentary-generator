@@ -3,7 +3,7 @@ import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
 from app.dataset import build_prompt
-from app.lora import add_lora
+from app.lora import add_lora, merge_lora
 from app.train import ADAPTER_PATH, BASE_MODEL
 
 
@@ -18,13 +18,17 @@ def load_base():
     return AutoModelForCausalLM.from_pretrained(BASE_MODEL).eval()
 
 
-def load_adapted(path=ADAPTER_PATH):
-    "A fresh distilgpt2 with the saved LoRA adapter attached (the base weights stay frozen)."
+def load_adapted(path=ADAPTER_PATH, merge=False):
+    """A fresh distilgpt2 with the saved LoRA adapter attached (the base weights stay frozen).
+
+    With merge=True the adapter is folded into the weights (W + B@A * alpha/r), giving a plain GPT-2
+    that needs no adapter code and no extra computation at inference.
+    """
     checkpoint = torch.load(path)
     model = add_lora(load_base(), r=checkpoint["r"], alpha=checkpoint["alpha"])
     result = model.load_state_dict(checkpoint["state"], strict=False)
     assert not result.unexpected_keys, result.unexpected_keys
-    return model.eval()
+    return (merge_lora(model) if merge else model).eval()
 
 
 def clean_output(text):

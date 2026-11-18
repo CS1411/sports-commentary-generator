@@ -20,9 +20,9 @@ Tick these off as you go, and commit after each one.
       Hint: LoRA adapter injection and training.
 - [x] **3. Build a Streamlit interface to input event descriptions and generate commentary.**  
       Hint: Streamlit UI development.
-- [ ] **4. Test the model's ability to produce relevant and engaging commentary.**  
+- [x] **4. Test the model's ability to produce relevant and engaging commentary.**  
       Hint: Qualitative model testing.
-- [ ] **5. Implement adapter merging for inference.**  
+- [x] **5. Implement adapter merging for inference.**  
       Hint: LoRA adapter merging.
 
 ## Run it

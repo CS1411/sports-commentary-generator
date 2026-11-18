@@ -11,8 +11,8 @@ st.write("Describe a simulated sports event and a GPT-2 model adapted with LoRA 
 
 
 @st.cache_resource(show_spinner="Loading the model...")
-def get_models():
-    return lm.load_tokenizer(), lm.load_adapted(), lm.load_base()
+def get_models(merged):
+    return lm.load_tokenizer(), lm.load_adapted(merge=merged), lm.load_base()
 
 
 @st.cache_data
@@ -26,6 +26,9 @@ with st.sidebar:
     tone = st.radio("Tone", TONES)
     max_words = st.slider("Maximum length (tokens)", 10, 80, 40)
     creativity = st.slider("Creativity (0 = always the same line)", 0.0, 1.0, 0.0, 0.1)
+    merged = st.checkbox("Merge the adapter into the weights", value=True,
+                         help="Folds the LoRA update into the model so inference needs no extra computation. "
+                              "The commentary is the same either way.")
     compare = st.checkbox("Also show the base model without LoRA", value=False)
 
 choice = st.selectbox("Try an example event", ["(write your own)"] + example_events())
@@ -37,7 +40,7 @@ if st.button("Generate commentary", type="primary"):
     if not event.strip():
         st.warning("Write an event first.")
     else:
-        tok, adapted, base = get_models()
+        tok, adapted, base = get_models(merged)
         text = lm.generate_commentary(adapted, tok, event.strip(), tone, max_words, creativity)
         st.subheader("Commentary")
         st.success(text or "(the model produced no text)")

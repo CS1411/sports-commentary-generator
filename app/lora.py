@@ -62,3 +62,11 @@ def count_params(model):
     "(trainable, total) parameter counts."
     trainable = sum(p.numel() for p in model.parameters() if p.requires_grad)
     return trainable, sum(p.numel() for p in model.parameters())
+
+
+def merge_lora(model):
+    "Fold every adapter into the base weights and remove the wrappers: a plain GPT-2 again, no extra computation."
+    for block in model.transformer.h:
+        if isinstance(block.attn.c_attn, LoRALinear):
+            block.attn.c_attn = block.attn.c_attn.merged()
+    return model
