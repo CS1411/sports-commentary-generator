@@ -1,7 +1,5 @@
-streamlit
-httpx
-pytest
-torch
-transformers
-datasets
-numpy
+--extra-index-url https://download.pytorch.org/whl/cpu
+streamlit==1.67.0
+torch==2.15.0
+transformers==5.23.0
+pytest==9.2.0
