@@ -1,0 +1,8 @@
+trainable 147,456 / 82,060,032 parameters = 0.18%
+epoch 1/6  loss 2.3892
+epoch 2/6  loss 1.6131
+epoch 3/6  loss 1.2830
+epoch 4/6  loss 1.0518
+epoch 5/6  loss 0.8838
+epoch 6/6  loss 0.7516
+saved commentary-lora.pt: 594,703 bytes, trained in 314 s

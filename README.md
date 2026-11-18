@@ -16,7 +16,7 @@ Tick these off as you go, and commit after each one.
 
 - [x] **1. Create a small dataset of simulated sports events and commentary pairs.**  
       Hint: Dataset creation and formatting.
-- [ ] **2. Implement LoRA adapter injection and training on a pre-trained LLM (e.g., GPT-2).**  
+- [x] **2. Implement LoRA adapter injection and training on a pre-trained LLM (e.g., GPT-2).**  
       Hint: LoRA adapter injection and training.
 - [ ] **3. Build a Streamlit interface to input event descriptions and generate commentary.**  
       Hint: Streamlit UI development.
